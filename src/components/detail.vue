@@ -2,7 +2,7 @@
   <div class="detail">
     <div v-wechat-title="$route.meta.title = bookTitle"></div>
     <div class="content">
-      <img v-if="thumb" :src="host + 'Uploads/zcfile/' + thumb">
+      <img v-if="thumb" :src="'http://statics.wenyunjy.com/' + thumb">
       <audio ref="audio" class="audio"></audio>
       <div class="back1" v-if="isPlay" @click="play">
         <img src="../assets/pause.png" alt="pause">
@@ -74,7 +74,7 @@ export default {
           this.isPlay = false
         })
       }
-      this.audio.src = this.host + 'Uploads/zcMp3/' + this.currentMp3
+      this.audio.src = 'http://statics.wenyunjy.com/' + this.currentMp3
     },
     play () {
       if (!this.audio) {
