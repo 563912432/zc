@@ -2,6 +2,9 @@
   <div class="detail">
     <div v-wechat-title="$route.meta.title = bookTitle"></div>
     <div class="content">
+      <div class="back" @click="back">
+        <img src="../assets/back.png" alt="back">
+      </div>
       <iframe :src="url" frameborder="0" style="width: 100%;height: 100%"></iframe>
     </div>
   </div>
@@ -14,7 +17,8 @@ export default {
     return {
       host: '/',
       bookTitle: '',
-      url: ''
+      url: '',
+      bookTag: ''
     }
   },
   created () {
@@ -26,6 +30,7 @@ export default {
         console.log(res.info)
         this.thumb = res.info.thumb
         this.bookTitle = res.info.book
+        this.bookTag = res.info.bookTag
         this.url = res.info.url
       } else {
         console.log(res.info)
@@ -43,6 +48,9 @@ export default {
         }
       }
       obj.send(data)
+    },
+    back () {
+      this.$router.push({path: '/' + this.bookTag})
     }
   }
 }
@@ -61,5 +69,18 @@ export default {
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  .detail .content img{
+    flex: 1;
+    width: 100%;
+    height: auto;
+  }
+  .detail .content .back {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
   }
 </style>
