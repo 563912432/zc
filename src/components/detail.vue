@@ -27,8 +27,6 @@ export default {
     let url = this.host + 'Api/Zc/detail'
     this.post(url, formdata, res => {
       if (res.status) {
-        console.log(res.info)
-        this.thumb = res.info.thumb
         this.bookTitle = res.info.book
         this.bookTag = res.info.bookTag
         this.url = res.info.url
