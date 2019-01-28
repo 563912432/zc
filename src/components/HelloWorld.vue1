@@ -1,6 +1,22 @@
 <template>
   <div class="hello">
     <div v-wechat-title="$route.meta.title = ''"></div>
+    <!--上为logo-->
+    <div class="logo-wrap">
+      <img src="../assets/logo1.png" alt="logo" style="height: 35px;width: auto">
+    </div>
+    <!--下为正文内容-->
+    <div class="wrap">
+      <!--title-->
+      <div class="title">{{ bookTitle }}</div>
+      <!--内容-->
+      <div class="wrap-content">
+        <div class="wrap-content-block" v-for="(item) in moduleInfo" :key="item.id" @click="detail(item.id)">
+          <span>{{item.title}}</span>
+          <img src="../assets/music.png" alt="music" style="width: 16px;height: 16px">
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,8 +27,7 @@ export default {
     return {
       host: '/',
       bookTitle: '',
-      moduleInfo: '',
-      bookUrl: ''
+      moduleInfo: ''
     }
   },
   created () {
@@ -21,11 +36,8 @@ export default {
     let url = this.host + 'Api/Zc/index'
     this.post(url, formdata, res => {
       if (res.status) {
-        // console.log(res.info)
-        // this.bookTitle = res.info.book.title
-        // this.moduleInfo = res.info.info
-        // this.bookTitle = res.info.book.title
-        window.location.href = res.info.book.url
+        this.bookTitle = res.info.book.title
+        this.moduleInfo = res.info.info
       } else {
         console.log(res.info)
       }

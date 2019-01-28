@@ -1,6 +1,23 @@
 <template>
   <div class="detail">
     <div v-wechat-title="$route.meta.title = bookTitle"></div>
+    <div class="content">
+      <img v-if="thumb" :src="'http://statics.wenyunjy.com/' + thumb">
+      <audio ref="audio" class="audio"></audio>
+      <div class="back1" v-if="isPlay" @click="play">
+        <img src="../assets/pause.png" alt="pause">
+      </div>
+      <div class="back1" v-else @click="play">
+        <img src="../assets/play.png" alt="play">
+      </div>
+      <div class="back" @click="back">
+        <img src="../assets/back.png" alt="back">
+      </div>
+      <!--<div class="play">-->
+        <!--<div v-if="isPlay" class="playButton" @click="play">暂停</div>-->
+        <!--<div v-else class="playButton" @click="play">播放</div>-->
+      <!--</div>-->
+    </div>
   </div>
 </template>
 
@@ -10,8 +27,11 @@ export default {
   data () {
     return {
       host: '/',
+      thumb: null,
+      audio: null,
+      isPlay: false,
+      currentMp3: '',
       bookTitle: '',
-      url: '',
       bookTag: ''
     }
   },
@@ -21,14 +41,17 @@ export default {
     let url = this.host + 'Api/Zc/detail'
     this.post(url, formdata, res => {
       if (res.status) {
+        this.thumb = res.info.thumb
+        this.currentMp3 = res.info.mp3
         this.bookTitle = res.info.book
         this.bookTag = res.info.bookTag
-        this.url = res.info.url
-        window.location.href = res.info.url
       } else {
         console.log(res.info)
       }
     })
+  },
+  destroyed () {
+    this.isPlay = false
   },
   methods: {
     // post请求方法
@@ -41,6 +64,29 @@ export default {
         }
       }
       obj.send(data)
+    },
+    // 音频播放器初始化
+    createAudio () {
+      if (!this.audio) {
+        this.$refs.audio.setAttribute('controls', 'controls')
+        this.audio = this.$refs.audio
+        this.audio.addEventListener('ended', () => {
+          this.isPlay = false
+        })
+      }
+      this.audio.src = 'http://statics.wenyunjy.com/' + this.currentMp3
+    },
+    play () {
+      if (!this.audio) {
+        this.createAudio()
+      }
+      if (!this.isPlay) {
+        this.audio.play()
+        this.isPlay = true
+      } else {
+        this.audio.pause()
+        this.isPlay = false
+      }
     },
     back () {
       this.$router.push({path: '/' + this.bookTag})
@@ -63,6 +109,12 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
   }
+  .detail .content .audio {
+    position: fixed;
+    bottom:0;
+    width: 100%;
+    z-index: 10;
+  }
   .detail .content img{
     flex: 1;
     width: 100%;
@@ -70,10 +122,41 @@ export default {
   }
   .detail .content .back {
     position: fixed;
-    bottom: 10px;
+    top: 10px;
     right: 10px;
     z-index: 10;
     width: 48px;
     height: 48px;
+  }
+  .detail .content .back1 {
+    position: fixed;
+    top: 10px;
+    right: 60px;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+  }
+  .detail .content .play {
+    position: absolute;
+    bottom: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    z-index: 10;
+  }
+  .detail .play .playButton{
+    width: 80px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: transparent;
+    border: solid 1px #dfdfdf;
+    font-size: 18px;
+    border-radius: 3px;
+  }
+  .detail .play .playButton:active{
+    background-color: #dfdfdf;
   }
 </style>
